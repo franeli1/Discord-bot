@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 import requests
 import my_secrets  #archivo con nuestro token 
-import base
+# import base
 import bingo
 
 
@@ -21,34 +21,46 @@ async def test(ctx, *args):
     respuesta = ' '.join(args)
     await ctx.send(respuesta)
 
-@bot.command()
-async def temp(ctx):
-    temp = base.OptenerTemp()
-    await ctx.send(f"la temperatura de mañana sera de {temp}")
+# @bot.command()
+#async def temp(ctx):
+#    temp = base.OptenerTemp()
+#    await ctx.send(f"la temperatura de mañana sera de {temp}")
 
 @bot.event
 async def on_ready():
     print(f"Preparado para empezar {bot.user}")
 
 @bot.command()
-async def crear_bingo():
-    bingo.CrearBingo()
+async def crear_bingo(ctx):
+    partida.CrearBingo()
+    await ctx.send("Creada la partida con exito")
 
 @bot.command()
 async def crear_Carta_Jugador(ctx):
-    if bingo.comprobarBingo():
-        bingo.jugador(ctx.author)
-        carta = bingo.pedirCarta()
-        respuesta = ' '.join(carta)
-        await ctx.send(respuesta)
+    if partida.activa:
+        nuevo_jugador = bingo.jugador(ctx.author)
+        carta = nuevo_jugador.pedirCarta()
+        partida.jugadores.append(nuevo_jugador)
+        await ctx.send(f"{ctx.author.mention}, aquí tienes tu cartón: {carta}")
     else: 
         await ctx.send("No hay ninguna partida en proceso.")
 
 @bot.command()
 async def jugadores(ctx):
-    juegan = bingo.jugador()
-    await ctx.send(''.join(juegan))
+    if not partida.jugadores:
+        await ctx.send("Aún no hay ningún jugador apuntado.")
+    else:
+        lista_nombres = [j.nombre for j in partida.obtener_jugadores]
+        await ctx.send(f"Jugadores en la partida: {', '.join(lista_nombres)}")
 
+@bot.command()
+async def bola(ctx):
+    resultado = partida.sacar_Bola()
+    await ctx.send('La bola sole del bombo y es... ' + resultado)
+
+
+def comprobar_numeros(valor):
+    partida
 
 
 #Aqui se tierne que instalar el requests porque sino el programa no va a funcionar

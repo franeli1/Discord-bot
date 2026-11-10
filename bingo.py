@@ -10,6 +10,7 @@ class partida_Bingo:
         self.bombo = list(range(1, 91))
         random.shuffle(self.bombo)
         self.numeros_salidos.clear()
+        self.jugadores.clear()
         self.activa = True
 
     def TerminarBingo(self):
@@ -19,26 +20,28 @@ class partida_Bingo:
         self.activa = False
 
     def comprobarBingo(self):
-        if len(self.bombo) == 0 and self.activa:
-            return False
-        else: 
-            return True
+        return self.activa and len(self.bombo) > 0
         
-    def jugadores(self):
+    def obtener_jugadores(self):
         return self.jugadores
+    
+    def sacar_Bola(self):
+        valor = self.bombo.pop(0)
+        self.numeros_salidos.append(valor)
+        
+        return valor
 
 class jugador:
     def __init__(self, jugador):
-        if not self.carton:
-            self.id = jugador.id
-            self.nombre = jugador.name
-            self.carton = pedirCarta()
-            self.linea = False
-            self.Bingo = False
+        self.id = jugador.id
+        self.nombre = jugador.name
+        self.carton = list(random.sample(range(1, 91), 25))
+        self.linea = False
+        self.Bingo = False
 
-def pedirCarta():
-    cartaJugador = random.sample(list(range(90), 25))
-    return cartaJugador
+    def pedirCarta(self):
+        return self.carton
+
 
 
 
